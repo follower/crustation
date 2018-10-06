@@ -472,11 +472,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
             case GpuCommand::Gpu0_Opcodes::gp0_image_load:
                 if (in_data_transfer) {
-                    if (lines_remaining_in_this_command == 1) {
-                        in_data_transfer = false;
-                    } else {
-                        // TODO: ...
-                    }
 
                     // Note: Not entirely sure about where this (correct) order is determined.
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 2));
@@ -486,7 +481,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
                     if (lines_remaining_in_this_command == 1) {
-                        // TODO: ...
                         qDebug() << ">>>> size :" << current_command->data.size();
 
                         auto size_vertex = current_command->parameters.last().toPoint();
@@ -500,6 +494,8 @@ MainWindow::MainWindow(QWidget *parent) :
                         current_command->appendRow(new_item);
 
                         current_command->data.close();
+
+                        in_data_transfer = false;
                     }
 
 
