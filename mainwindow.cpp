@@ -478,6 +478,7 @@ MainWindow::MainWindow(QWidget *parent) :
                         // TODO: ...
                     }
 
+                    // Note: Not entirely sure about where this (correct) order is determined.
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 2));
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 3));
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 0));
