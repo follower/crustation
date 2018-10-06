@@ -137,6 +137,9 @@ public:
 
     QList<QVariant> parameters;
 
+    QBuffer data; // Associated (DMA) transferred data. (Primarily for 'gp0_image_load' (0xa0) command.)
+
+
     static GpuCommand *fromFields(QString targetGpu, quint32 command) {
         auto result = new GpuCommand(QString::number(command, 16));
         result->targetGpu = targetGpu.at(targetGpu.size()-1).digitValue();
@@ -278,8 +281,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QPainter painter(&image2);
     painter.setPen(Qt::red);
     ui->label_2->setPixmap(QPixmap::fromImage(image2));
-
-    QBuffer transferred_data;
 
     while(!input_log.atEnd()) {
         input_log >> current_field;
@@ -477,27 +478,27 @@ MainWindow::MainWindow(QWidget *parent) :
                         // TODO: ...
                     }
 
-                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 2));
-                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 3));
-                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 0));
-                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 1));
+                    current_command->data.putChar(byte_of_quint32(current_numeric_field, 2));
+                    current_command->data.putChar(byte_of_quint32(current_numeric_field, 3));
+                    current_command->data.putChar(byte_of_quint32(current_numeric_field, 0));
+                    current_command->data.putChar(byte_of_quint32(current_numeric_field, 1));
 
 
                     if (lines_remaining_in_this_command == 1) {
                         // TODO: ...
-                        qDebug() << ">>>> size :" << transferred_data.size();
+                        qDebug() << ">>>> size :" << current_command->data.size();
 
                         auto size_vertex = current_command->parameters.last().toPoint();
 
                         qDebug() << size_vertex; // .toSize();
 
-                        QImage image((unsigned char *) transferred_data.data().constData(), size_vertex.x(), size_vertex.y(), QImage::Format_RGB555);
+                        QImage image((unsigned char *) current_command->data.data().constData() /* LOL */, size_vertex.x(), size_vertex.y(), QImage::Format_RGB555);
 
                         auto new_item = new QStandardItem("");
                         new_item->setData(QPixmap::fromImage(image), Qt::DecorationRole);
                         current_command->appendRow(new_item);
 
-                        transferred_data.close();
+                        current_command->data.close();
                     }
 
 
@@ -531,7 +532,7 @@ MainWindow::MainWindow(QWidget *parent) :
                         current_command->parameters.append(size_vertex);
                         current_command->appendRow(new QStandardItem(QString("Size: %1 x %2").arg(size_vertex.x()).arg(size_vertex.y())));
 
-                        transferred_data.open(QBuffer::ReadWrite | QBuffer::Truncate);
+                        current_command->data.open(QBuffer::ReadWrite | QBuffer::Truncate);
 
                         in_data_transfer = true;
                         lines_remaining_in_this_command = (size_vertex.x() * size_vertex.y())/2;
