@@ -8,6 +8,7 @@
 #include <QVector2D>
 #include <QPainter>
 #include <QMetaEnum>
+#include <QBuffer>
 
 QStandardItemModel model;
 
@@ -271,11 +272,14 @@ MainWindow::MainWindow(QWidget *parent) :
     bool in_data_transfer = false;
 
     GpuCommand *current_command = nullptr;
+    GpuCommand *current_gpu1_command = nullptr; // These can happen in the middle of GPU0 commands so need to be handled separately.
 
     //QImage image2(QSize(1024, 512), QImage::Format_RGB888); // TODO: Figure out most appropriate format to use...
     QPainter painter(&image2);
     painter.setPen(Qt::red);
     ui->label_2->setPixmap(QPixmap::fromImage(image2));
+
+    QBuffer transferred_data;
 
     while(!input_log.atEnd()) {
         input_log >> current_field;
@@ -291,6 +295,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
         qDebug() << "remaining: " << lines_remaining_in_this_command;
+
+        if (current_field == "GP1") { // TODO: Do this with less duplication...
+            current_gpu1_command = GpuCommand::fromFields(current_field, current_numeric_field);
+
+            auto item_raw = new QStandardItem(QString("0x%1").arg(current_numeric_field, 8, 16, QChar('0')));
+            parentItem->appendRow({current_gpu1_command, item_raw}); // TODO: Do this properly?
+
+            line_count++;
+
+            current_gpu1_command = nullptr;
+
+            continue;
+        }
 
         if (lines_remaining_in_this_command == 0) {
 
@@ -345,7 +362,7 @@ MainWindow::MainWindow(QWidget *parent) :
                 };
 
             } else if (current_command->targetGpu == 1) {
-                lines_remaining_in_this_command = 1;
+                // TODO: Handle this better?
             } else {
                 qDebug() << "Target GPU not recognized!";
                 abort();
@@ -459,6 +476,31 @@ MainWindow::MainWindow(QWidget *parent) :
                     } else {
                         // TODO: ...
                     }
+
+                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 2));
+                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 3));
+                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 0));
+                    transferred_data.putChar(byte_of_quint32(current_numeric_field, 1));
+
+
+                    if (lines_remaining_in_this_command == 1) {
+                        // TODO: ...
+                        qDebug() << ">>>> size :" << transferred_data.size();
+
+                        auto size_vertex = current_command->parameters.last().toPoint();
+
+                        qDebug() << size_vertex; // .toSize();
+
+                        QImage image((unsigned char *) transferred_data.data().constData(), size_vertex.x(), size_vertex.y(), QImage::Format_RGB555);
+
+                        auto new_item = new QStandardItem("");
+                        new_item->setData(QPixmap::fromImage(image), Qt::DecorationRole);
+                        current_command->appendRow(new_item);
+
+                        transferred_data.close();
+                    }
+
+
                 } else {
                     switch(lines_remaining_in_this_command) {
 
@@ -489,11 +531,12 @@ MainWindow::MainWindow(QWidget *parent) :
                         current_command->parameters.append(size_vertex);
                         current_command->appendRow(new QStandardItem(QString("Size: %1 x %2").arg(size_vertex.x()).arg(size_vertex.y())));
 
+                        transferred_data.open(QBuffer::ReadWrite | QBuffer::Truncate);
+
                         in_data_transfer = true;
                         lines_remaining_in_this_command = (size_vertex.x() * size_vertex.y())/2;
 
-                        //lines_remaining_in_this_command++; // Kludge to handle "current" line properly
-                        lines_remaining_in_this_command+=2; // Kludge to handle "current" line properly
+                        lines_remaining_in_this_command++; // Kludge to handle "current" line properly
 
                         }
                         break;
@@ -506,7 +549,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
         }
 
-        lines_remaining_in_this_command--; // TODO: Ensure we handle mixed GPU0 & GPU1 lines correctly.
+        if (current_command->targetGpu == 0) {
+            lines_remaining_in_this_command--; // TODO: [Done?] Ensure we handle mixed GPU0 & GPU1 lines correctly.
+        }
 
         line_count++;
 
