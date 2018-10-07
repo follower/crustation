@@ -303,6 +303,7 @@ void MainWindow::loadFile(QString logFilePath) {
     ui->label_2->setPixmap(QPixmap::fromImage(image2));
 
     while(!input_log.atEnd()) {
+
         input_log >> current_field;
         qDebug() << "current_field: " << current_field;
 
