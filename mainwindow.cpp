@@ -494,6 +494,10 @@ void MainWindow::loadFile(QString logFilePath) {
             case GpuCommand::Gpu0_Opcodes::gp0_image_load:
                 if (in_data_transfer) {
 
+                    // 24-bit color...
+                    // Bit: 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 00
+                    //      00 BB BB BB BB BB GG GG GG GG GG RR RR RR RR RR
+
                     // Note: Not entirely sure about where this (correct) order is determined.
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 2));
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 3));
