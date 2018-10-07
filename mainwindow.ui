@@ -43,7 +43,7 @@
     <item>
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>TextLabel</string>
+       <string>VRAM</string>
       </property>
      </widget>
     </item>
