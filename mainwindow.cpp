@@ -191,19 +191,22 @@ public:
 
 void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QModelIndex &previous) {
     qDebug() << "current changed" << current << previous;
-    qDebug() << model.itemFromIndex(current); // TODO: Improve this?
-    qDebug("0x%02x", static_cast<GpuCommand *>(model.itemFromIndex(current))->command_value);
 
-    auto current_command = static_cast<GpuCommand *>(model.itemFromIndex(current));
+    if (current.isValid()) {
+        qDebug() << model.itemFromIndex(current); // TODO: Improve this?
+        qDebug("0x%02x", static_cast<GpuCommand *>(model.itemFromIndex(current))->command_value);
 
-    // TODO: Do this properly/replay/etc...
-    if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_shaded_triangle
-            || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_shaded_quad
-            || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_monochrome_quad
-            || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
-        QPainter painter(&image2);
-        drawPolygon(painter, current_command, false);
-        ui->label_2->setPixmap(QPixmap::fromImage(image2));
+        auto current_command = static_cast<GpuCommand *>(model.itemFromIndex(current));
+
+        // TODO: Do this properly/replay/etc...
+        if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_shaded_triangle
+                || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_shaded_quad
+                || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_monochrome_quad
+                || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
+            QPainter painter(&image2);
+            drawPolygon(painter, current_command, false);
+            ui->label_2->setPixmap(QPixmap::fromImage(image2));
+        }
     }
 }
 
