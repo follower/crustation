@@ -484,11 +484,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
                     if (lines_remaining_in_this_command == 1) {
-                        qDebug() << ">>>> size :" << current_command->data.size();
 
                         auto size_vertex = current_command->parameters.last().toPoint();
-
-                        qDebug() << size_vertex; // .toSize();
 
                         QImage image((unsigned char *) current_command->data.data().constData() /* LOL */, size_vertex.x(), size_vertex.y(), QImage::Format_RGB555);
 
