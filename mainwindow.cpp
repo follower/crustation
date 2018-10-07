@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QMetaEnum>
 #include <QBuffer>
+#include <QFileDialog>
 
 QStandardItemModel model;
 
@@ -243,6 +244,11 @@ void MainWindow::drawPolygon(QPainter &painter, GpuCommand *current_command, boo
 }
 
 
+void MainWindow::initUi() {
+
+    image2.fill(Qt::gray);
+    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+}
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -257,11 +263,22 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
                      this, &MainWindow::command_onCurrentChanged);
 
+    ui->treeView->header()->setSectionResizeMode(QHeaderView::Stretch);
+
+    initUi();
+}
+
+
+void MainWindow::loadFile(QString logFilePath) {
+
+    model.setRowCount(0);
+
+    initUi();
+
+
     QStandardItem *parentItem = model.invisibleRootItem();
 
-
-
-    QFile input_file("../data/gpu-log.txt");
+    QFile input_file(logFilePath);
     input_file.open(QFile::ReadOnly | QFile::Text);
 
     QTextStream input_log(&input_file);
@@ -566,6 +583,18 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    auto fileName = QFileDialog::getOpenFileName(this);
+    qDebug() << fileName;
+#if 0
+    QtConcurrent::run(this, &MainWindow::loadFile, fileName);
+#else
+    this->loadFile(fileName);
+#endif
+    ui->treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 // TODO: Remove this when GpuCommand::Opcodes is moved into .h file.
