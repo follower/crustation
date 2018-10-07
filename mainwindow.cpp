@@ -570,12 +570,16 @@ void MainWindow::loadFile(QString logFilePath) {
 
         line_count++;
 
+#if 1
+        if ((line_count % 500) == 0) {
+            QCoreApplication::instance()->processEvents(QEventLoop::AllEvents, 1);
+        }
+#endif
+
         if (line_count > 20000 /* TODO: 20000*/) {
             break;
         }
     }
-
-    ui->treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 
 }
