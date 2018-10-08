@@ -383,7 +383,7 @@ void MainWindow::loadFile(QString logFilePath) {
             } else if (current_command->targetGpu == 1) {
                 // TODO: Handle this better?
             } else {
-                qDebug() << "Target GPU not recognized!";
+                qFatal("Target GPU not recognized!");
                 abort();
             }
 
