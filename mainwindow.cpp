@@ -411,8 +411,11 @@ void MainWindow::loadFile(QString logFilePath) {
                         drawPolygon(painter, current_command);
                     }
 
-                    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+#define DRAW_IN_LOAD_FILE 1
 
+#if DRAW_IN_LOAD_FILE
+                    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+#endif
                     break;
 
                 default:
@@ -444,7 +447,9 @@ void MainWindow::loadFile(QString logFilePath) {
                         drawPolygon(painter, current_command);
                     }
 
+#if DRAW_IN_LOAD_FILE
                     ui->label_2->setPixmap(QPixmap::fromImage(image2));
+#endif
                     break;
 
 
@@ -475,7 +480,9 @@ void MainWindow::loadFile(QString logFilePath) {
                         drawPolygon(painter, current_command);
                     }
 
+#if DRAW_IN_LOAD_FILE
                     ui->label_2->setPixmap(QPixmap::fromImage(image2));
+#endif
 
                     break;
 
@@ -530,8 +537,10 @@ void MainWindow::loadFile(QString logFilePath) {
 
 #if 0
                         painter.drawPoint(vertex);
-#endif
+#if DRAW_IN_LOAD_FILE
                         ui->label_2->setPixmap(QPixmap::fromImage(image2));
+#endif
+#endif
                         }
                         break;
 
@@ -580,6 +589,9 @@ void MainWindow::loadFile(QString logFilePath) {
         }
     }
 
+#if !DRAW_IN_LOAD_FILE
+    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+#endif
 
 }
 
