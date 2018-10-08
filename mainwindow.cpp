@@ -26,7 +26,7 @@ QColor colorFromWord(quint32 word) {
 
     QColor color(qRgb(byte_of_quint32(word, 3), byte_of_quint32(word, 2), byte_of_quint32(word, 1)));
 
-    qDebug("R: 0x%02x G: 0x%02x B: 0x%02x", color.red(), color.green(), color.blue());
+    qCDebug(crustFileLoad, "R: 0x%02x G: 0x%02x B: 0x%02x", color.red(), color.green(), color.blue());
 
     return color;
 }
@@ -39,8 +39,7 @@ QPoint pointFromWord(quint32 word) {
 
     QPoint vertex(x, y);
 
-    qDebug("x: %4d y: %4d", x, y);
-    qDebug() << "vertex: " << vertex;
+    qCDebug(crustFileLoad) << "vertex (x, y): " << vertex;
 
     return vertex;
 }
@@ -302,7 +301,8 @@ void MainWindow::loadFile(QString logFilePath) {
     while(!input_log.atEnd()) {
 
         input_log >> current_field;
-        qDebug() << "current_field: " << current_field;
+
+        qCDebug(crustFileLoad) << "current_field: " << current_field;
 
         if (current_field=="") { // TODO: Get `.atEnd()` check to work properly...
             break;
@@ -310,10 +310,7 @@ void MainWindow::loadFile(QString logFilePath) {
 
 
         input_log >> current_numeric_field;
-        qDebug("current_numeric_field: 0x%x", current_numeric_field);
-
-
-        qDebug() << "remaining: " << lines_remaining_in_this_command;
+        qCDebug(crustFileLoad, "current_numeric_field: 0x%x", current_numeric_field);
 
         if (current_field == "GP1") { // TODO: Do this with less duplication...
             current_gpu1_command = GpuCommand::fromFields(current_field, current_numeric_field);
@@ -328,16 +325,19 @@ void MainWindow::loadFile(QString logFilePath) {
             continue;
         }
 
+        qCDebug(crustFileLoad) << "lines remaining: " << lines_remaining_in_this_command;
+
         if (lines_remaining_in_this_command == 0) {
 
             current_command = GpuCommand::fromFields(current_field, current_numeric_field);
             auto item_raw = new QStandardItem(QString("0x%1").arg(current_numeric_field, 8, 16, QChar('0')));
             parentItem->appendRow({current_command, item_raw}); // TODO: Do this properly?
 
-            qDebug("\n----------");
-            qDebug() << "gpu: " << current_command->targetGpu;
-            qDebug("command_value: 0x%x", current_command->command_value);
-            qDebug() << QMetaEnum::fromType<GpuCommand::Gpu0_Opcodes>().valueToKey(current_command->command_value);
+            qCDebug(crustFileLoad) << "";
+            qCDebug(crustFileLoad) << "----------";
+            qCDebug(crustFileLoad) << "gpu: " << current_command->targetGpu;
+            qCDebug(crustFileLoad, "command_value: 0x%x", current_command->command_value);
+            qCDebug(crustFileLoad) << "command: " << QMetaEnum::fromType<GpuCommand::Gpu0_Opcodes>().valueToKey(current_command->command_value);
 
             if (current_command->targetGpu == 0) {
 
