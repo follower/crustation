@@ -194,9 +194,6 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
     qDebug() << "current changed" << current << previous;
 
     if (current.isValid()) {
-        qDebug() << model.itemFromIndex(current); // TODO: Improve this?
-        qDebug("0x%02x", static_cast<GpuCommand *>(model.itemFromIndex(current))->command_value);
-
         auto current_command = static_cast<GpuCommand *>(model.itemFromIndex(current));
 
         // TODO: Do this properly/replay/etc...
@@ -221,13 +218,11 @@ void MainWindow::drawPolygon(QPainter &painter, GpuCommand *current_command, boo
         }
     }
 
-    qDebug() << points;
     if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_monochrome_quad
             || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_shaded_quad
             || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
         points.swap(points.size()-1, points.size()-2);
     }
-    qDebug() << points;
 
 
     if (useItemColor) {
@@ -597,7 +592,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionOpen_triggered()
 {
     auto fileName = QFileDialog::getOpenFileName(this);
-    qDebug() << fileName;
+
 #if 0
     QtConcurrent::run(this, &MainWindow::loadFile, fileName);
 #else
