@@ -601,7 +601,12 @@ void MainWindow::on_actionOpen_triggered()
 #if 0
     QtConcurrent::run(this, &MainWindow::loadFile, fileName);
 #else
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QCoreApplication::instance()->processEvents(QEventLoop::AllEvents, 1);
+
     this->loadFile(fileName);
+
+    QApplication::restoreOverrideCursor();
 #endif
     ui->treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
