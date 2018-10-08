@@ -389,10 +389,7 @@ void MainWindow::loadFile(QString logFilePath) {
 
         }
 
-        qDebug() << "current_command: " << current_command;
-        qDebug() << "linecount: " << line_count;
-
-
+        qCDebug(crustFileLoad) << "linecount: " << line_count;
 
         if (current_command!=nullptr) {
 
