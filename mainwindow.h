@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(crustFileLoad)
 
 namespace Ui {
 class MainWindow;

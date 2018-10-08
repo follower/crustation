@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+Q_LOGGING_CATEGORY(crustFileLoad, "crust.file.load", QtDebugMsg)
+
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
