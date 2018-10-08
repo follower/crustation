@@ -373,7 +373,7 @@ void MainWindow::loadFile(QString logFilePath) {
                     break;
 
                 default:
-                    qDebug("Unhandled command: 0x%02x in 0x%08x", current_command->command_value, current_numeric_field);
+                    qWarning("Unhandled command: 0x%02x in 0x%08x", current_command->command_value, current_numeric_field);
                     line_count = 999999; // TODO: Handle this properly.
                     break;
                 };
