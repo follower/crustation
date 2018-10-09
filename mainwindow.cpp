@@ -192,7 +192,6 @@ public:
 
 
 void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QModelIndex &previous) {
-    qDebug() << "current changed" << current << previous;
 
     if (current.isValid()) {
         auto current_command = static_cast<GpuCommand *>(model.itemFromIndex(current));
