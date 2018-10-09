@@ -12,11 +12,13 @@ Q_LOGGING_CATEGORY(crustFileLoad, "crust.file.load", QtInfoMsg /*QtDebugMsg*/)
 #include <QMetaEnum>
 #include <QBuffer>
 #include <QFileDialog>
+#include <QTimer>
 
 QStandardItemModel model;
 
 QImage image2(QSize(1024, 512), QImage::Format_RGB888); // TODO: Figure out most appropriate format to use...
 
+unsigned int playbackDelay_ms = 1000;
 
 // TODO: Do this better/more robust...
 // Note: MSB[byte0][byte1][byte2][byte3]LSB
@@ -193,6 +195,8 @@ public:
 
 void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QModelIndex &previous) {
 
+    bool renderRequired = false;
+
     if (current.isValid()) {
         auto current_command = static_cast<GpuCommand *>(model.itemFromIndex(current));
 
@@ -202,7 +206,13 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
                 || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_monochrome_quad
                 || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
             QPainter painter(&image2);
-            drawPolygon(painter, current_command, false);
+            drawPolygon(painter, current_command, this->isPlaying);
+            renderRequired = !this->isPlaying;
+        }
+
+        renderRequired = renderRequired || (this->isPlaying && (current_command->command_value == GpuCommand::Gpu1_Opcodes::gp1_display_vram_start));
+
+        if (renderRequired) {
             ui->label_2->setPixmap(QPixmap::fromImage(image2));
         }
     }
@@ -246,6 +256,19 @@ void MainWindow::initUi() {
 }
 
 
+void MainWindow::setupMoreUi() {
+
+    QActionGroup *menuActionGroup = new QActionGroup(this);
+
+    ui->selectPlayback1second->setActionGroup(menuActionGroup);
+    ui->selectPlayback200ms->setActionGroup(menuActionGroup);
+    ui->selectPlayback10ms->setActionGroup(menuActionGroup);
+
+    ui->actionPlay->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->actionPause->setIcon(this->style()->standardIcon(QStyle::SP_MediaPause));
+}
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -259,6 +282,8 @@ MainWindow::MainWindow(QWidget *parent) :
                      this, &MainWindow::command_onCurrentChanged);
 
     ui->treeView->header()->setSectionResizeMode(QHeaderView::Stretch);
+
+    setupMoreUi();
 
     initUi();
 }
@@ -616,6 +641,45 @@ void MainWindow::on_actionOpen_triggered()
     ui->treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     ui->treeView->setCurrentIndex(model.index(0,0));
+}
+
+void MainWindow::playNextCommand() {
+
+    if (!this->isPlaying) {
+        return;
+    }
+
+    auto nextSibling = ui->treeView->currentIndex().sibling(ui->treeView->currentIndex().row()+1, 0);
+
+    if (nextSibling.isValid()) {
+        ui->treeView->setCurrentIndex(nextSibling);
+        QTimer::singleShot(playbackDelay_ms, this, &MainWindow::playNextCommand);
+    } else {
+        this->isPlaying = false;
+    }
+
+}
+
+void MainWindow::on_actionPlay_triggered() {
+    this->isPlaying = true;
+    this->playNextCommand();
+}
+
+void MainWindow::on_actionPause_triggered() {
+    this->isPlaying = false;
+    // TODO: Also stop timer?
+}
+
+void MainWindow::on_selectPlayback1second_triggered() {
+    playbackDelay_ms = 1000;
+}
+
+void MainWindow::on_selectPlayback200ms_triggered() {
+    playbackDelay_ms = 200;
+}
+
+void MainWindow::on_selectPlayback10ms_triggered() {
+    playbackDelay_ms = 10;
 }
 
 // TODO: Remove this when GpuCommand::Opcodes is moved into .h file.

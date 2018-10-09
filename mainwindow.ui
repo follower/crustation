@@ -64,15 +64,36 @@
     </property>
     <addaction name="actionOpen"/>
    </widget>
+   <widget class="QMenu" name="menuPlayback">
+    <property name="title">
+     <string>Playback</string>
+    </property>
+    <addaction name="actionDelay"/>
+    <addaction name="selectPlayback1second"/>
+    <addaction name="selectPlayback200ms"/>
+    <addaction name="selectPlayback10ms"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuPlayback"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionPlay"/>
+   <addaction name="actionPause"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
@@ -81,6 +102,60 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionPlay">
+   <property name="text">
+    <string>Play</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="selectPlayback1second">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1 second</string>
+   </property>
+   <property name="toolTip">
+    <string>1 second</string>
+   </property>
+  </action>
+  <action name="selectPlayback200ms">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>200 ms</string>
+   </property>
+   <property name="toolTip">
+    <string>200 ms</string>
+   </property>
+  </action>
+  <action name="selectPlayback10ms">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>10 ms</string>
+   </property>
+   <property name="toolTip">
+    <string>10 ms</string>
+   </property>
+  </action>
+  <action name="actionDelay">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Delay</string>
    </property>
   </action>
  </widget>
