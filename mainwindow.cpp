@@ -207,7 +207,7 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
                 || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
             QPainter painter(&image2);
             drawPolygon(painter, current_command, this->isPlaying);
-            renderRequired = !this->isPlaying;
+            renderRequired = !this->isPlaying || (this->isPlaying && playbackDelay_ms>100); // TODO: Allow "smart" render-required detection to be user selectable?
         }
 
         renderRequired = renderRequired || (this->isPlaying && (current_command->command_value == GpuCommand::Gpu1_Opcodes::gp1_display_vram_start));
