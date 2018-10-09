@@ -41,7 +41,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="labelVramView">
       <property name="text">
        <string>VRAM</string>
       </property>

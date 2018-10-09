@@ -213,7 +213,7 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
         renderRequired = renderRequired || (this->isPlaying && (current_command->command_value == GpuCommand::Gpu1_Opcodes::gp1_display_vram_start));
 
         if (renderRequired) {
-            ui->label_2->setPixmap(QPixmap::fromImage(image2));
+            ui->labelVramView->setPixmap(QPixmap::fromImage(image2));
         }
     }
 }
@@ -252,7 +252,7 @@ void MainWindow::drawPolygon(QPainter &painter, GpuCommand *current_command, boo
 void MainWindow::initVram() {
 
     image2.fill(Qt::gray);
-    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+    ui->labelVramView->setPixmap(QPixmap::fromImage(image2));
 }
 
 
@@ -320,7 +320,7 @@ void MainWindow::loadFile(QString logFilePath) {
     //QImage image2(QSize(1024, 512), QImage::Format_RGB888); // TODO: Figure out most appropriate format to use...
     QPainter painter(&image2);
     painter.setPen(Qt::red);
-    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+    ui->labelVramView->setPixmap(QPixmap::fromImage(image2));
 
     while(!input_log.atEnd()) {
 
@@ -438,7 +438,7 @@ void MainWindow::loadFile(QString logFilePath) {
 #define DRAW_IN_LOAD_FILE 1
 
 #if DRAW_IN_LOAD_FILE
-                    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+                    ui->labelVramView->setPixmap(QPixmap::fromImage(image2));
 #endif
                     break;
 
@@ -472,7 +472,7 @@ void MainWindow::loadFile(QString logFilePath) {
                     }
 
 #if DRAW_IN_LOAD_FILE
-                    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+                    ui->labelVramView->setPixmap(QPixmap::fromImage(image2));
 #endif
                     break;
 
@@ -505,7 +505,7 @@ void MainWindow::loadFile(QString logFilePath) {
                     }
 
 #if DRAW_IN_LOAD_FILE
-                    ui->label_2->setPixmap(QPixmap::fromImage(image2));
+                    ui->labelVramView->setPixmap(QPixmap::fromImage(image2));
 #endif
 
                     break;
