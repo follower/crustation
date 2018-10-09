@@ -614,6 +614,8 @@ void MainWindow::on_actionOpen_triggered()
     QApplication::restoreOverrideCursor();
 #endif
     ui->treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->treeView->setCurrentIndex(model.index(0,0));
 }
 
 // TODO: Remove this when GpuCommand::Opcodes is moved into .h file.
