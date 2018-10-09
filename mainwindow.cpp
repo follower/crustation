@@ -338,6 +338,7 @@ void MainWindow::loadFile(QString logFilePath) {
 
         if (current_field == "GP1") { // TODO: Do this with less duplication...
             current_gpu1_command = GpuCommand::fromFields(current_field, current_numeric_field);
+            current_gpu1_command->setToolTip(QString("Line: %1").arg(line_count));
 
             auto item_raw = new QStandardItem(QString("0x%1").arg(current_numeric_field, 8, 16, QChar('0')));
             parentItem->appendRow({current_gpu1_command, item_raw}); // TODO: Do this properly?
@@ -354,6 +355,7 @@ void MainWindow::loadFile(QString logFilePath) {
         if (lines_remaining_in_this_command == 0) {
 
             current_command = GpuCommand::fromFields(current_field, current_numeric_field);
+            current_command->setToolTip(QString("Line: %1").arg(line_count));
             auto item_raw = new QStandardItem(QString("0x%1").arg(current_numeric_field, 8, 16, QChar('0')));
             parentItem->appendRow({current_command, item_raw}); // TODO: Do this properly?
 
