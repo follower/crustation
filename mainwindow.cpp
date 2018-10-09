@@ -249,7 +249,7 @@ void MainWindow::drawPolygon(QPainter &painter, GpuCommand *current_command, boo
 }
 
 
-void MainWindow::initUi() {
+void MainWindow::initVram() {
 
     image2.fill(Qt::gray);
     ui->label_2->setPixmap(QPixmap::fromImage(image2));
@@ -285,7 +285,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupMoreUi();
 
-    initUi();
+    initVram();
 }
 
 
@@ -293,7 +293,7 @@ void MainWindow::loadFile(QString logFilePath) {
 
     model.setRowCount(0);
 
-    initUi();
+    initVram();
 
 
     QStandardItem *parentItem = model.invisibleRootItem();

@@ -40,7 +40,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void drawPolygon(QPainter &painter, GpuCommand *current_command, bool useItemColor);
-    void initUi();
+    void initVram();
     void setupMoreUi();
 
     bool isPlaying;
