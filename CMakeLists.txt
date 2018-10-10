@@ -22,6 +22,8 @@ set(SRC_LIST
     mainwindow.ui
     mainwindow.cpp
     main.cpp
+    gpu/command.cpp
+    gpu/renderer.cpp
 )
 
 #aux_source_directory(. SRC_LIST)

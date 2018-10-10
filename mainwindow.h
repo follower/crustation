@@ -4,13 +4,14 @@
 #include <QMainWindow>
 #include <QLoggingCategory>
 
+#include <gpu/command.h>
+#include <gpu/renderer.h>
+
 Q_DECLARE_LOGGING_CATEGORY(crustFileLoad)
 
 namespace Ui {
 class MainWindow;
 }
-
-class GpuCommand;
 
 class MainWindow : public QMainWindow
 {
@@ -39,8 +40,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    void drawPolygon(QPainter &painter, GpuCommand *current_command, bool useItemColor);
-    void initVram();
+
+    Renderer *renderer;
+
     void setupMoreUi();
 
     bool isPlaying;
