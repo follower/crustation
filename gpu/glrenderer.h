@@ -24,11 +24,11 @@ protected:
     void paintGL() override;
 
     private:
-        GLuint m_posAttr;
-        GLuint m_colAttr;
-        GLuint m_matrixUniform;
+        GLuint positionAttr;
+        GLuint colorAttr;
+        GLuint matrixUniform;
 
-        QOpenGLShaderProgram *m_program;
+        QOpenGLShaderProgram *vram_render_program;
 
         QVector<QVector2D> vertices;
         QVector<QVector3D> colors;

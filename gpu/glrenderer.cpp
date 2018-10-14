@@ -22,13 +22,13 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 // (with a smattering of <https://www.ics.com/blog/fixed-function-modern-opengl-part-2-4>)
 
     static const char *vertexShaderSource =
-        "attribute highp vec4 posAttr;\n"
-        "attribute lowp vec4 colAttr;\n"
+        "attribute highp vec4 positionAttr;\n"
+        "attribute lowp vec4 colorAttr;\n"
         "varying lowp vec4 col;\n"
         "uniform highp mat4 matrix;\n"
         "void main() {\n"
-        "   col = colAttr;\n"
-        "   gl_Position = matrix * posAttr;\n"
+        "   col = colorAttr;\n"
+        "   gl_Position = matrix * positionAttr;\n"
         "}\n";
 
     static const char *fragmentShaderSource =
@@ -44,13 +44,13 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         glClearColor(QColor(Qt::gray).redF(), QColor(Qt::gray).greenF(), QColor(Qt::gray).blueF(), 1.0);
 
-        m_program = new QOpenGLShaderProgram(this);
-        m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-        m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
-        m_program->link();
-        m_posAttr = m_program->attributeLocation("posAttr");
-        m_colAttr = m_program->attributeLocation("colAttr");
-        m_matrixUniform = m_program->uniformLocation("matrix");
+        vram_render_program = new QOpenGLShaderProgram(this);
+        vram_render_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+        vram_render_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+        vram_render_program->link();
+        positionAttr = vram_render_program->attributeLocation("positionAttr");
+        colorAttr = vram_render_program->attributeLocation("colorAttr");
+        matrixUniform = vram_render_program->uniformLocation("matrix");
 
     }
 
@@ -59,7 +59,7 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_program->bind();
+        vram_render_program->bind();
 
         QMatrix4x4 matrix;
 
@@ -70,12 +70,12 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         matrix.scale(4.0f);
         matrix.scale(1, -1, 1); // Note: This works around different directions of Y-positive values between GPU & OpenGL.
 
-        m_program->setUniformValue(m_matrixUniform, matrix);
+        vram_render_program->setUniformValue(matrixUniform, matrix);
 
 
         if (this->vertices.size() > 0) {
-            glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vertices[0]);
-            glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->colors[0]);
+            glVertexAttribPointer(positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vertices[0]);
+            glVertexAttribPointer(colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->colors[0]);
 
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
@@ -87,7 +87,7 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         }
 
-        m_program->release();
+        vram_render_program->release();
 
     }
 
