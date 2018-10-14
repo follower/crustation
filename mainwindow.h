@@ -6,6 +6,7 @@
 
 #include <gpu/command.h>
 #include <gpu/renderer.h>
+#include <gpu/glrenderer.h>
 
 Q_DECLARE_LOGGING_CATEGORY(crustFileLoad)
 
@@ -42,6 +43,7 @@ private:
     Ui::MainWindow *ui;
 
     Renderer *renderer;
+    GLRenderer *glRenderer;
 
     void setupMoreUi();
 
