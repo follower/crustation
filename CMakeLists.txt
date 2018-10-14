@@ -24,6 +24,7 @@ set(SRC_LIST
     main.cpp
     gpu/command.cpp
     gpu/renderer.cpp
+    gpu/glrenderer.cpp
 )
 
 #aux_source_directory(. SRC_LIST)
