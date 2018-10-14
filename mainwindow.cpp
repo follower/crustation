@@ -32,12 +32,16 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
                 || current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
             this->renderer->drawPolygon(current_command, this->isPlaying);
             renderRequired = !this->isPlaying || (this->isPlaying && playbackDelay_ms>100); // TODO: Allow "smart" render-required detection to be user selectable?
+
+            ui->openGLWidget->drawPolygon(current_command);
         }
 
         renderRequired = renderRequired || (this->isPlaying && (current_command->command_value == GpuCommand::Gpu1_Opcodes::gp1_display_vram_start));
 
         if (renderRequired) {
             this->renderer->requestRender();
+            ui->openGLWidget->doRender();
+            ui->openGLWidget->clear(); // ~
         }
     }
 }
@@ -222,12 +226,14 @@ void MainWindow::loadFile(QString logFilePath) {
 
                     if (lines_remaining_in_this_command==1) {
                         this->renderer->drawPolygon(current_command);
+                        ui->openGLWidget->drawPolygon(current_command);
                     }
 
 #define DRAW_IN_LOAD_FILE 1
 
 #if DRAW_IN_LOAD_FILE
                     this->renderer->requestRender();
+                    ui->openGLWidget->doRender(); //
 #endif
                     break;
 
@@ -258,10 +264,12 @@ void MainWindow::loadFile(QString logFilePath) {
                 case 1:
                     if (lines_remaining_in_this_command==1) {
                         this->renderer->drawPolygon(current_command);
+                        ui->openGLWidget->drawPolygon(current_command);
                     }
 
 #if DRAW_IN_LOAD_FILE
                     this->renderer->requestRender();
+                    ui->openGLWidget->doRender(); //
 #endif
                     break;
 
@@ -291,10 +299,12 @@ void MainWindow::loadFile(QString logFilePath) {
 
                     if (lines_remaining_in_this_command==1) {
                         this->renderer->drawPolygon(current_command);
+                        ui->openGLWidget->drawPolygon(current_command);
                     }
 
 #if DRAW_IN_LOAD_FILE
                     this->renderer->requestRender();
+                    ui->openGLWidget->doRender(); //
 #endif
 
                     break;
@@ -404,6 +414,7 @@ void MainWindow::loadFile(QString logFilePath) {
 
 #if !DRAW_IN_LOAD_FILE
     this->renderer->requestRender();
+    ui->openGLWidget->doRender(); //
 #endif
 
 }
