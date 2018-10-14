@@ -435,6 +435,7 @@ void MainWindow::on_actionOpen_triggered()
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QCoreApplication::instance()->processEvents(QEventLoop::AllEvents, 1);
 
+    this->setWindowFilePath(fileName);
     this->loadFile(fileName);
 
     QApplication::restoreOverrideCursor();
