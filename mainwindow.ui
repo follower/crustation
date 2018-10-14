@@ -41,6 +41,9 @@
      </widget>
     </item>
     <item>
+     <widget class="GLRenderer" name="openGLWidget"/>
+    </item>
+    <item>
      <widget class="QLabel" name="labelVramView">
       <property name="text">
        <string>VRAM</string>
@@ -160,6 +163,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GLRenderer</class>
+   <extends>QOpenGLWidget</extends>
+   <header>gpu/glrenderer.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
