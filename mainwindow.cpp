@@ -151,6 +151,8 @@ void MainWindow::loadFile(QString logFilePath) {
             auto item_raw = new QStandardItem(QString("0x%1").arg(current_numeric_field, 8, 16, QChar('0')));
             parentItem->appendRow({current_command, item_raw}); // TODO: Do this properly?
 
+            current_command->raw_lines = new QStandardItem("Full Raw");
+
             qCDebug(crustFileLoad) << "";
             qCDebug(crustFileLoad) << "----------";
             qCDebug(crustFileLoad) << "gpu: " << current_command->targetGpu;
@@ -210,6 +212,13 @@ void MainWindow::loadFile(QString logFilePath) {
         qCDebug(crustFileLoad) << "linecount: " << line_count;
 
         if (current_command!=nullptr) {
+
+            // TODO: Handle this in a more tidy manner?
+            current_command->raw_lines->appendRow({new QStandardItem(QString("%1").arg(current_command->raw_lines->rowCount()+1)),
+                                                   new QStandardItem(QString("%1 %2 %3 %4").arg(byte_of_quint32(current_numeric_field, 0), 2, 16, QChar('0'))
+                                                   .arg(byte_of_quint32(current_numeric_field, 1), 2, 16, QChar('0'))
+                                                   .arg(byte_of_quint32(current_numeric_field, 2), 2, 16, QChar('0'))
+                                                   .arg(byte_of_quint32(current_numeric_field, 3), 2, 16, QChar('0')))});
 
             switch(current_command->command_value) {
             case GpuCommand::Gpu0_Opcodes::gp0_monochrome_quad:
@@ -395,6 +404,12 @@ void MainWindow::loadFile(QString logFilePath) {
                     }
                 }
             };
+
+
+            if ((lines_remaining_in_this_command==1) && (current_command->raw_lines->rowCount() > 1)) {
+                current_command->appendRow(current_command->raw_lines);
+            }
+
 
         }
 

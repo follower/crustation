@@ -106,7 +106,10 @@ public:
     int command_value = -1;
 
     QList<QVariant> parameters;
+
     QBuffer data; // Associated (DMA) transferred data. (Primarily for 'gp0_image_load' (0xa0) command.)
+
+    QStandardItem *raw_lines;
 
     static GpuCommand *fromFields(QString targetGpu, quint32 command);
 
