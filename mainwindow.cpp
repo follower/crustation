@@ -263,6 +263,8 @@ void MainWindow::loadFile(QString logFilePath) {
                 case 5:
                 case 3:
                 case 1:
+                    current_command->addOpaqueParameter(current_numeric_field);
+
                     if (lines_remaining_in_this_command==1) {
                         this->renderer->drawPolygon(current_command);
                         this->glRenderer->drawPolygon(current_command);
