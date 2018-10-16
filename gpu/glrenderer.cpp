@@ -116,6 +116,7 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
     for (QVariant item: current_command->parameters) {
         if (item.canConvert<QPoint>()) {
             // Note: Scaling is by VRAM width/height, not by selected PSX screen width/height.
+            // TODO: Do scaling in shader instead?
             this->vertices.append(QVector2D(item.value<QPoint>()) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT));
         } else if (item.canConvert<QColor>()) {
             QColor theColor = item.value<QColor>();
