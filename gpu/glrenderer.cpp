@@ -68,12 +68,13 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         matrix.scale(float(VRAM_WIDTH)/VRAM_HEIGHT, 1.0f);
         matrix.ortho(-2.0f*VRAM_WIDTH/VRAM_HEIGHT, 2.0f*VRAM_WIDTH/VRAM_HEIGHT, -2.0f, 2.0f, -2.0f, 2.0f);
         matrix.scale(4.0f);
-        matrix.scale(1, -1, 1); // Note: This works around different directions of Y-positive values between GPU & OpenGL.
+        matrix.scale(1, -1, 1); // Note: This works around different directions of Y-positive values between PSX GPU & OpenGL.
 
         vram_render_program->setUniformValue(matrixUniform, matrix);
 
 
         if (this->vertices.size() > 0) {
+
             glVertexAttribPointer(positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vertices[0]);
             glVertexAttribPointer(colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->colors[0]);
 
