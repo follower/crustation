@@ -68,3 +68,10 @@ QPoint GpuCommand::addVertexParameter(quint32 parameter_word) {
 
     return vertex;
 }
+
+
+quint32 GpuCommand::addOpaqueParameter(quint32 parameter_word) {
+    this->parameters.append(parameter_word);
+    this->appendRow(new QStandardItem(QString("Param: 0x%1").arg(parameter_word, 8, 16, QChar('0'))));
+    return parameter_word;
+}
