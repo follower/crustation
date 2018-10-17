@@ -258,7 +258,18 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
 //        qDebug("%08x", current_command->parameters[6].toUInt());
 //        qDebug("%08x", current_command->parameters[8].toUInt());
 
-        auto word = current_command->parameters[4].toUInt();
+        auto word = current_command->parameters[2].toUInt();
+
+        auto clut = byte_of_quint32(word, 0) << 8 | byte_of_quint32(word, 1);
+
+        auto clut_xcoord = (clut & 0b111111) * 16;
+        auto clut_ycoord = ((clut >> 6) & 0b111111111);
+
+        qDebug() << "clut_xcoord:" << clut_xcoord;
+        qDebug() << "clut_ycoord:"<< clut_ycoord;
+
+
+        word = current_command->parameters[4].toUInt();
 
         auto texpage = byte_of_quint32(word, 0) << 8 | byte_of_quint32(word, 1);
 
