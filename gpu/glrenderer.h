@@ -67,6 +67,7 @@ protected:
 
         QVector<QOpenGLTexture *> textures_loaded; // Those stored in VRAM.
 
+        VertexBundle screen_vertices_textured; // For current PSX "screen" display.
         VertexBundle vram_vertices_textured; // For our visualisation of VRAM.
 
         // TODO: Handle the key side better...

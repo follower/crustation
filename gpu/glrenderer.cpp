@@ -149,6 +149,27 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         }
 
 
+        if ((this->screen_vertices_textured.vertices.size() > 0) && this->screen_vertices_textured.textures.size() > 0) {
+
+            glVertexAttribPointer(textured_positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.vertices[0]);
+            glVertexAttribPointer(textured_colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.colors[0]);
+            glVertexAttribPointer(textured_texCoordAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.texCoords[0]);
+
+            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(2);
+
+            for (int texture_index = 0; texture_index < this->screen_vertices_textured.textures.size(); texture_index++) {
+                this->screen_vertices_textured.textures[texture_index]->bind();
+                glDrawArrays(GL_TRIANGLES, texture_index * 6, 6);
+            }
+
+            glDisableVertexAttribArray(2);
+            glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(0);
+
+        }
+
         textured_render_program->release();
 
     }
