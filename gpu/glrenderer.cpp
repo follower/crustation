@@ -65,6 +65,9 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         glClearColor(QColor(Qt::gray).redF(), QColor(Qt::gray).greenF(), QColor(Qt::gray).blueF(), 1.0);
 
+
+        // TODO: Remove duplication between the following two sections...
+
         vram_render_program = new QOpenGLShaderProgram(this);
         vram_render_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
         vram_render_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
@@ -104,6 +107,8 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         vram_render_program->setUniformValue(matrixUniform, matrix);
 
+
+        // TODO: Remove duplication between the following three sections...
 
         if (this->vertices.size() > 0) {
 
