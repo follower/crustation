@@ -407,6 +407,7 @@ void MainWindow::loadFile(QString logFilePath) {
 
 
             if ((lines_remaining_in_this_command==1) && (current_command->raw_lines->rowCount() > 1)) {
+                // TODO: Limit the number of lines? (e.g. for load data command)
                 current_command->appendRow(current_command->raw_lines);
             }
 
