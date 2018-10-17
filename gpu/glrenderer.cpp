@@ -229,6 +229,50 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
         this->colors.insert(this->colors.size(), 2+3, this->colors.last());
     }
 
+
+    QVector<QVector2D> texCoords = {
+        QVector2D(0, 1),
+        QVector2D(1, 1),
+        QVector2D(0, 0),
+
+        QVector2D(1, 1),
+        QVector2D(0, 0),
+        QVector2D(1, 0),
+    };
+
+    if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
+        for (int i=6; i > 0; i-- ) {
+            this->screen_vertices_textured.vertices.append(this->vertices.at(this->vertices.size()-i)); // Note: This duplicates vertices, so coloured poly drawn first, then textured.
+            this->screen_vertices_textured.colors.append(QVector3D(1.0, 0, 0));
+            this->screen_vertices_textured.texCoords.append(texCoords[6-i]);
+        }
+
+
+//        qDebug("%08x", current_command->parameters[2].toUInt());
+//        qDebug("%08x", current_command->parameters[4].toUInt());
+//        qDebug("%08x", current_command->parameters[6].toUInt());
+//        qDebug("%08x", current_command->parameters[8].toUInt());
+
+        auto word = current_command->parameters[4].toUInt();
+
+        auto texpage = byte_of_quint32(word, 0) << 8 | byte_of_quint32(word, 1);
+
+        auto texpage_xbase = (texpage & 0b1111) * 64;
+        auto texpage_ybase = ((texpage >> 4) & 0b1) * 256;
+
+        qDebug() << "texpage_xbase:" << texpage_xbase;
+        qDebug() << "texpage_ybase:" << texpage_ybase;
+
+
+//        this->point_to_texture_lookup.value(std::make_pair(texpage_xbase, texpage_ybase));
+
+        auto found_texture = this->point_to_texture_lookup.value((texpage_xbase << 16 | texpage_ybase));
+
+        // TODO: Handle texture not found?
+        this->screen_vertices_textured.textures.append(found_texture);
+
+    }
+
 }
 
 
