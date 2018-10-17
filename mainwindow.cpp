@@ -353,6 +353,8 @@ void MainWindow::loadFile(QString logFilePath) {
 
                         current_command->data.close();
 
+                        current_command->texture = new QImage(image);
+
                         in_data_transfer = false;
                     }
 
