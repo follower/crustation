@@ -173,6 +173,48 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
 
         this->colors.insert(this->colors.size(), 2+3, this->colors.last());
     }
+
+}
+
+
+void GLRenderer::drawTexture(GpuCommand *current_command) {
+
+    auto position_vertex = current_command->parameters.first().toPoint();
+    auto size_vertex = current_command->parameters.last().toPoint();
+
+    // TODO: Remove duplicate/overlapping VRAM vertices/textures?
+
+    // TODO: Handle this using OpenGL Elements/Indexes?
+
+    this->vram_vertices_textured.addVertex(QVector2D(position_vertex) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT), QVector2D(0, 1));
+    this->vram_vertices_textured.addVertex((QVector2D(position_vertex) + QVector2D(size_vertex)) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT), QVector2D(1, 0));
+    this->vram_vertices_textured.addVertex((QVector2D(position_vertex) + QVector2D(size_vertex.x(), 0)) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT), QVector2D(1, 1));
+
+
+    this->vram_vertices_textured.addVertex(QVector2D(position_vertex) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT), QVector2D(0, 1));
+    this->vram_vertices_textured.addVertex((QVector2D(position_vertex) + QVector2D(size_vertex)) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT), QVector2D(1, 0));
+    this->vram_vertices_textured.addVertex((QVector2D(position_vertex) + QVector2D(0, size_vertex.y())) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT), QVector2D(0, 0));
+
+
+    this->vram_vertices_textured.textures.append(this->point_to_texture_lookup.value((position_vertex.x() << 16 | position_vertex.y())));
+
+}
+
+
+void GLRenderer::loadTexture(GpuCommand *current_command) {
+
+    auto position_vertex = current_command->parameters.first().toPoint();
+
+
+    this->textures_loaded.append(new QOpenGLTexture(current_command->texture->mirrored()));
+
+    this->textures_loaded.last()->setMagnificationFilter(QOpenGLTexture::Nearest);
+
+    //        this->point_to_texture_lookup[std::make_pair(position_vertex.x(), position_vertex.y())] = this->textures.last();
+    this->point_to_texture_lookup[(position_vertex.x() << 16 | position_vertex.y())] = this->textures_loaded.last();
+
+    this->drawTexture(current_command);
+
 }
 
 

@@ -36,6 +36,9 @@ public:
     void doRender();
     void clear();
 
+    void drawTexture(GpuCommand *current_command);
+    void loadTexture(GpuCommand *current_command);
+
 protected:
     // QOpenGLWidget interface
     void initializeGL() override;
@@ -62,6 +65,12 @@ protected:
 
         QOpenGLShaderProgram *textured_render_program;
 
+        QVector<QOpenGLTexture *> textures_loaded; // Those stored in VRAM.
+
+        VertexBundle vram_vertices_textured; // For our visualisation of VRAM.
+
+        // TODO: Handle the key side better...
+        QHash<quint32, QOpenGLTexture *> point_to_texture_lookup;
 
         bool resetRequested = false;
 
