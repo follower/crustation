@@ -5,8 +5,27 @@
 
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
 #include <QOpenGLWidget>
 
+
+class VertexBundle {
+
+public: //
+        QVector<QOpenGLTexture *> textures;
+
+        QVector<QVector2D> vertices;
+        QVector<QVector3D> colors;
+        QVector<QVector2D> texCoords;
+
+        void addVertex(QVector2D vertex, QVector2D textureCoords, QVector3D color = QVector3D(1.0, 0, 0)) {
+
+            this->vertices.append(vertex);
+            this->texCoords.append(textureCoords);
+            this->colors.append(color);
+
+        }
+};
 
 
 class GLRenderer : public QOpenGLWidget, protected QOpenGLFunctions {
