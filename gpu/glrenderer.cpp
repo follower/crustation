@@ -37,6 +37,27 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         "   gl_FragColor = col;\n"
         "}\n";
 
+    static const char *textured_vertexShaderSource =
+        "attribute highp vec4 positionAttr;\n"
+        "attribute mediump vec4 texCoord;\n"
+        "varying mediump vec4 texc;\n"
+        "attribute lowp vec4 colorAttr;\n"
+        "varying lowp vec4 col;\n"
+        "uniform highp mat4 matrix;\n"
+        "void main() {\n"
+        "   col = colorAttr;\n"
+        "   texc = texCoord;\n"
+        "   gl_Position = matrix * positionAttr;\n"
+        "}\n";
+
+    static const char *textured_fragmentShaderSource =
+        "varying lowp vec4 col;\n"
+        "uniform sampler2D texture;\n"
+        "varying mediump vec4 texc;\n"
+        "void main() {\n"
+        "    gl_FragColor = texture2D(texture, texc.st);\n"
+        "}\n";
+
 
     void GLRenderer::initializeGL() {
 
@@ -51,6 +72,17 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         positionAttr = vram_render_program->attributeLocation("positionAttr");
         colorAttr = vram_render_program->attributeLocation("colorAttr");
         matrixUniform = vram_render_program->uniformLocation("matrix");
+
+
+        textured_render_program = new QOpenGLShaderProgram(this);
+        textured_render_program->addShaderFromSourceCode(QOpenGLShader::Vertex, textured_vertexShaderSource);
+        textured_render_program->addShaderFromSourceCode(QOpenGLShader::Fragment, textured_fragmentShaderSource);
+        textured_render_program->link();
+        textured_positionAttr = textured_render_program->attributeLocation("positionAttr");
+        textured_colorAttr = textured_render_program->attributeLocation("colorAttr");
+        textured_matrixUniform = textured_render_program->uniformLocation("matrix");
+
+        textured_texCoordAttr = textured_render_program->attributeLocation("texCoord");
 
     }
 

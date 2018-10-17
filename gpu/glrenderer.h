@@ -52,6 +52,17 @@ protected:
         QVector<QVector2D> vertices;
         QVector<QVector3D> colors;
 
+
+        GLuint textured_texCoordAttr;
+
+        GLuint textured_positionAttr;
+        GLuint textured_colorAttr;
+        GLuint textured_matrixUniform;
+
+
+        QOpenGLShaderProgram *textured_render_program;
+
+
         bool resetRequested = false;
 
 };
