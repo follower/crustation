@@ -34,6 +34,9 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
             renderRequired = !this->isPlaying || (this->isPlaying && playbackDelay_ms>100); // TODO: Allow "smart" render-required detection to be user selectable?
 
             this->glRenderer->drawPolygon(current_command);
+        } else if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_image_load) {
+            this->glRenderer->drawTexture(current_command);
+            renderRequired = true;
         }
 
         renderRequired = renderRequired || (this->isPlaying && (current_command->command_value == GpuCommand::Gpu1_Opcodes::gp1_display_vram_start));
@@ -354,6 +357,10 @@ void MainWindow::loadFile(QString logFilePath) {
                         current_command->data.close();
 
                         current_command->texture = new QImage(image);
+
+
+                        this->glRenderer->loadTexture(current_command);
+
 
                         in_data_transfer = false;
                     }
