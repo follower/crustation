@@ -192,6 +192,11 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
         this->vertices.clear();
         this->colors.clear();
 
+        this->screen_vertices_textured.textures.clear();
+        this->screen_vertices_textured.vertices.clear();
+        this->screen_vertices_textured.colors.clear();
+        this->screen_vertices_textured.texCoords.clear();
+
         this->resetRequested = false;
     }
 

@@ -33,6 +33,9 @@ void MainWindow::command_onCurrentChanged(const QModelIndex &current, const QMod
             this->renderer->drawPolygon(current_command, this->isPlaying);
             renderRequired = !this->isPlaying || (this->isPlaying && playbackDelay_ms>100); // TODO: Allow "smart" render-required detection to be user selectable?
 
+            if (renderRequired) {
+                this->glRenderer->clear();
+            }
             this->glRenderer->drawPolygon(current_command);
         } else if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_image_load) {
             this->glRenderer->drawTexture(current_command);
