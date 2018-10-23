@@ -15,6 +15,7 @@ QPoint pointFromWord(quint32 word); // TODO: Remove from this header once file l
 
 // Parsing VRAM data...
 QList<QColor> convertClutToPalette(QByteArray clut_table_data);
+QImage convert4BitTextureToIndexedImage(QByteArray texture_4bit_indexed_data, QSize texture_size);
 
 
 class GpuCommand : public QStandardItem {

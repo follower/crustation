@@ -51,6 +51,45 @@ QList<QColor> convertClutToPalette(QByteArray clut_table_data) {
 }
 
 
+QImage convert4BitTextureToIndexedImage(QByteArray texture_4bit_indexed_data, QSize texture_size) {
+
+    QSize image_size(texture_size.width() * 4 /* One 16-bit texture pixel expands to four 8-bit image pixels */, texture_size.height());
+
+    QBuffer texture_8bit_indexed_data;
+    texture_8bit_indexed_data.open(QBuffer::ReadWrite | QBuffer::Truncate);
+
+    // TODO: Verify data size and texture size are consistent.
+    for (auto offset = 0; offset < texture_4bit_indexed_data.size(); offset+=2) {
+        quint8 first_byte = texture_4bit_indexed_data.at(offset);
+        quint8 second_byte = texture_4bit_indexed_data.at(offset+1);
+
+        // TODO: Fix up all the byte reordering...
+        texture_8bit_indexed_data.putChar((second_byte & 0b1111));
+        texture_8bit_indexed_data.putChar(((second_byte >> 4) & 0b1111));
+
+        texture_8bit_indexed_data.putChar((first_byte & 0b1111));
+        texture_8bit_indexed_data.putChar(((first_byte >> 4) & 0b1111));
+    }
+
+    texture_8bit_indexed_data.close();
+
+    // NOTE: Qt Creator appears to crash when viewing QImage::Format_Indexed8 images.
+    QImage texture_8bit_indexed_image((unsigned char *) texture_8bit_indexed_data.data().constData() /* LOL */, image_size.width(), image_size.height(), QImage::Format_Indexed8);
+
+    // TODO: Pre-generate default color table & only once?
+    QVector<QRgb> default16ColorTable;
+
+    for (auto value = 0; value <= 0x0f; value++) {
+        default16ColorTable.append(QRgb(QColor(value*8, value*8, value*8).rgb())); // Generates distinguishable grayscale values.
+    }
+
+    texture_8bit_indexed_image.setColorTable(default16ColorTable);
+    texture_8bit_indexed_image.detach();
+
+    return texture_8bit_indexed_image.copy(); // Note: For reasons I don't understand both `.detach()` & `.copy()` seem to be required to avoid potential image corruption.
+}
+
+
 GpuCommand *GpuCommand::fromFields(QString targetGpu, quint32 command) {
     auto result = new GpuCommand(QString::number(command, 16));
     result->targetGpu = targetGpu.at(targetGpu.size()-1).digitValue();
