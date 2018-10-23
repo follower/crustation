@@ -13,6 +13,10 @@
 QPoint pointFromWord(quint32 word); // TODO: Remove from this header once file loading is pulled into here.
 
 
+// Parsing VRAM data...
+QList<QColor> convertClutToPalette(QByteArray clut_table_data);
+
+
 class GpuCommand : public QStandardItem {
 
     Q_GADGET

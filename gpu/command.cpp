@@ -24,6 +24,33 @@ extern QPoint pointFromWord(quint32 word) {
 }
 
 
+// MSB[x][00000][11111][22222]LSB
+#define five_bit_group_from_word(the_word, group_index) ((the_word >> ((2-group_index)*5)) & 0b11111)
+
+QList<QColor> convertClutToPalette(QByteArray clut_table_data) {
+
+    // Parses bunch of bytes from a VRAM transfer as Color Look-Up Table
+    // and creates a palette in a form we can use more easily.
+
+    QList<QColor> palette;
+
+    // Note: Assumes it's a 4-bit palette/Color Look Up Table...
+    // TODO: Include other size CLUTs?
+    for (auto offset = 0; offset < clut_table_data.size(); offset+=2) {
+        quint16 clut_entry = (static_cast<quint8>(clut_table_data.at(offset)) << 8) | static_cast<quint8>(clut_table_data.at(offset+1));
+
+        // TODO: Handle the 5-bit color conversion properly...
+        QColor this_color(five_bit_group_from_word(clut_entry, 2) * 8,
+                          five_bit_group_from_word(clut_entry, 1) * 8,
+                          five_bit_group_from_word(clut_entry, 0) * 8,
+                          (clut_entry == 0x0000) ? 0 : 255);
+        palette << this_color;
+    }
+
+    return palette;
+}
+
+
 GpuCommand *GpuCommand::fromFields(QString targetGpu, quint32 command) {
     auto result = new GpuCommand(QString::number(command, 16));
     result->targetGpu = targetGpu.at(targetGpu.size()-1).digitValue();
