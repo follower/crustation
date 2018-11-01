@@ -123,6 +123,8 @@ public:
     QColor addColorParameter(quint32 parameter_word, bool decorate_parent = false);
     QPoint addVertexParameter(quint32 parameter_word);
     quint32 addOpaqueParameter(quint32 parameter_word);
+
+    void addNamedPointParameter(QString parameter_name, QPoint point_parameter);
 };
 
 #endif // COMMAND_H

@@ -141,3 +141,9 @@ quint32 GpuCommand::addOpaqueParameter(quint32 parameter_word) {
     this->appendRow(new QStandardItem(QString("Param: 0x%1").arg(parameter_word, 8, 16, QChar('0'))));
     return parameter_word;
 }
+
+
+void GpuCommand::addNamedPointParameter(QString parameter_name, QPoint point_parameter) {
+    this->named_parameters.insert(parameter_name, point_parameter);
+    this->appendRow(new QStandardItem(QString("%1: (%2, %3)").arg(parameter_name).arg(point_parameter.x()).arg(point_parameter.y())));
+}
