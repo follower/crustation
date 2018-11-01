@@ -283,12 +283,14 @@ void MainWindow::loadFile(QString logFilePath) {
                     if (lines_remaining_in_this_command==1) {
                         this->renderer->drawPolygon(current_command);
                         this->glRenderer->drawPolygon(current_command);
-                    }
 
 #if DRAW_IN_LOAD_FILE
-                    this->renderer->requestRender();
-                    this->glRenderer->doRender(); //
+                        this->renderer->requestRender();
+                        this->glRenderer->doRender(); //
 #endif
+
+                    }
+
                     break;
 
 
