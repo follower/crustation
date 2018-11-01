@@ -110,6 +110,7 @@ public:
     int targetGpu = -1;
     int command_value = -1;
 
+    // TODO: Handle parameters in a better way?
     QList<QVariant> parameters;
     QHash<QString, QVariant> named_parameters;
 
