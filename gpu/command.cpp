@@ -147,3 +147,11 @@ void GpuCommand::addNamedPointParameter(QString parameter_name, QPoint point_par
     this->named_parameters.insert(parameter_name, point_parameter);
     this->appendRow(new QStandardItem(QString("%1: (%2, %3)").arg(parameter_name).arg(point_parameter.x()).arg(point_parameter.y())));
 }
+
+
+void GpuCommand::addTexturePreview(QImage texture) {
+    // Convenience method as `DecorationRole` data can't be set in constructor AFAICT.
+    auto this_item = new QStandardItem();
+    this_item->setData(QPixmap::fromImage(texture), Qt::DecorationRole);
+    this->appendRow(this_item);
+}

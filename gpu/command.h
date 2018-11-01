@@ -125,6 +125,7 @@ public:
     quint32 addOpaqueParameter(quint32 parameter_word);
 
     void addNamedPointParameter(QString parameter_name, QPoint point_parameter);
+    void addTexturePreview(QImage texture);
 };
 
 #endif // COMMAND_H
