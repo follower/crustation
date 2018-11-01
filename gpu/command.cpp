@@ -136,9 +136,14 @@ QPoint GpuCommand::addVertexParameter(quint32 parameter_word) {
 }
 
 
-quint32 GpuCommand::addOpaqueParameter(quint32 parameter_word) {
+quint32 GpuCommand::addOpaqueParameter(quint32 parameter_word, bool displayInTree) {
+    // Make `displayInTree` false when parameter has been handled and this method is just
+    // being used to keep correct parameter index offset.
+    // TODO: Change to handle parameter indexes better?
     this->parameters.append(parameter_word);
-    this->appendRow(new QStandardItem(QString("Param: 0x%1").arg(parameter_word, 8, 16, QChar('0'))));
+    if (displayInTree) {
+        this->appendRow(new QStandardItem(QString("parameter: 0x%1").arg(parameter_word, 8, 16, QChar('0'))));
+    }
     return parameter_word;
 }
 
