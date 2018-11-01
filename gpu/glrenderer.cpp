@@ -115,13 +115,13 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
             glVertexAttribPointer(positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vertices[0]);
             glVertexAttribPointer(colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->colors[0]);
 
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(positionAttr);
+            glEnableVertexAttribArray(colorAttr);
 
             glDrawArrays(GL_TRIANGLES, 0, this->vertices.size());
 
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(colorAttr);
+            glDisableVertexAttribArray(positionAttr);
 
         }
 
@@ -138,18 +138,18 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
             glVertexAttribPointer(textured_colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->vram_vertices_textured.colors[0]);
             glVertexAttribPointer(textured_texCoordAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vram_vertices_textured.texCoords[0]);
 
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glEnableVertexAttribArray(2);
+            glEnableVertexAttribArray(textured_positionAttr);
+            glEnableVertexAttribArray(textured_colorAttr);
+            glEnableVertexAttribArray(textured_texCoordAttr);
 
             for (int texture_index = 0; texture_index < this->vram_vertices_textured.textures.size(); texture_index++) {
                 this->vram_vertices_textured.textures[texture_index]->bind();
                 glDrawArrays(GL_TRIANGLES, texture_index * 6, 6);
             }
 
-            glDisableVertexAttribArray(2);
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(textured_texCoordAttr);
+            glDisableVertexAttribArray(textured_colorAttr);
+            glDisableVertexAttribArray(textured_positionAttr);
 
         }
 
@@ -160,18 +160,18 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
             glVertexAttribPointer(textured_colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.colors[0]);
             glVertexAttribPointer(textured_texCoordAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.texCoords[0]);
 
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glEnableVertexAttribArray(2);
+            glEnableVertexAttribArray(textured_positionAttr);
+            glEnableVertexAttribArray(textured_colorAttr);
+            glEnableVertexAttribArray(textured_texCoordAttr);
 
             for (int texture_index = 0; texture_index < this->screen_vertices_textured.textures.size(); texture_index++) {
                 this->screen_vertices_textured.textures[texture_index]->bind();
                 glDrawArrays(GL_TRIANGLES, texture_index * 6, 6);
             }
 
-            glDisableVertexAttribArray(2);
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(textured_texCoordAttr);
+            glDisableVertexAttribArray(textured_colorAttr);
+            glDisableVertexAttribArray(textured_positionAttr);
 
         }
 
