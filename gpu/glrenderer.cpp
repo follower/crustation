@@ -113,7 +113,7 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         if (this->vertices.size() > 0) {
 
             glVertexAttribPointer(positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vertices[0]);
-            glVertexAttribPointer(colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->colors[0]);
+            glVertexAttribPointer(colorAttr, 4, GL_FLOAT, GL_FALSE, 0, &this->colors[0]);
 
             glEnableVertexAttribArray(positionAttr);
             glEnableVertexAttribArray(colorAttr);
@@ -132,10 +132,11 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         textured_render_program->setUniformValue(textured_matrixUniform, matrix);
 
+
         if ((this->vram_vertices_textured.vertices.size() > 0) && this->vram_vertices_textured.textures.size() > 0) {
 
             glVertexAttribPointer(textured_positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vram_vertices_textured.vertices[0]);
-            glVertexAttribPointer(textured_colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->vram_vertices_textured.colors[0]);
+            glVertexAttribPointer(textured_colorAttr, 4, GL_FLOAT, GL_FALSE, 0, &this->vram_vertices_textured.colors[0]);
             glVertexAttribPointer(textured_texCoordAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->vram_vertices_textured.texCoords[0]);
 
             glEnableVertexAttribArray(textured_positionAttr);
@@ -157,7 +158,7 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
         if ((this->screen_vertices_textured.vertices.size() > 0) && this->screen_vertices_textured.textures.size() > 0) {
 
             glVertexAttribPointer(textured_positionAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.vertices[0]);
-            glVertexAttribPointer(textured_colorAttr, 3, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.colors[0]);
+            glVertexAttribPointer(textured_colorAttr, 4, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.colors[0]);
             glVertexAttribPointer(textured_texCoordAttr, 2, GL_FLOAT, GL_FALSE, 0, &this->screen_vertices_textured.texCoords[0]);
 
             glEnableVertexAttribArray(textured_positionAttr);
@@ -212,7 +213,7 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
             this->vertices.append(QVector2D(item.value<QPoint>()) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT));
         } else if (item.canConvert<QColor>()) {
             QColor theColor = item.value<QColor>();
-            this->colors.append(QVector3D(theColor.redF(), theColor.greenF(), theColor.blueF()));
+            this->colors.append(QVector4D(theColor.redF(), theColor.greenF(), theColor.blueF(), theColor.alphaF()));
         }
     }
 
@@ -248,7 +249,7 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
     if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
         for (int i=6; i > 0; i-- ) {
             this->screen_vertices_textured.vertices.append(this->vertices.at(this->vertices.size()-i)); // Note: This duplicates vertices, so coloured poly drawn first, then textured.
-            this->screen_vertices_textured.colors.append(QVector3D(1.0, 0, 0));
+            this->screen_vertices_textured.colors.append(QVector4D(1.0, 0, 0, 1.0));
             this->screen_vertices_textured.texCoords.append(texCoords[6-i]);
         }
 

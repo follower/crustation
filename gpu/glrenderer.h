@@ -15,10 +15,10 @@ public: //
         QVector<QOpenGLTexture *> textures;
 
         QVector<QVector2D> vertices;
-        QVector<QVector3D> colors;
+        QVector<QVector4D> colors;
         QVector<QVector2D> texCoords;
 
-        void addVertex(QVector2D vertex, QVector2D textureCoords, QVector3D color = QVector3D(1.0, 0, 0)) {
+        void addVertex(QVector2D vertex, QVector2D textureCoords, QVector4D color = QVector4D(1.0, 0, 0, 1.0)) {
 
             this->vertices.append(vertex);
             this->texCoords.append(textureCoords);
@@ -53,7 +53,7 @@ protected:
         QOpenGLShaderProgram *vram_render_program;
 
         QVector<QVector2D> vertices;
-        QVector<QVector3D> colors;
+        QVector<QVector4D> colors;
 
 
         GLuint textured_texCoordAttr;
