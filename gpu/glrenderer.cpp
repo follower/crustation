@@ -215,6 +215,11 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
             this->vertices.append(QVector2D(item.value<QPoint>()) / QVector2D(VRAM_WIDTH, VRAM_HEIGHT));
         } else if (item.canConvert<QColor>()) {
             QColor theColor = item.value<QColor>();
+            if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
+                // Hacky way to make the polygon we draw intially invisible.
+                // TODO: Handle this somewhere else?
+                theColor.setAlphaF(0.0);
+            }
             this->colors.append(QVector4D(theColor.redF(), theColor.greenF(), theColor.blueF(), theColor.alphaF()));
         }
     }
@@ -250,6 +255,7 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
 
     if (current_command->command_value == GpuCommand::Gpu0_Opcodes::gp0_textured_quad) {
         for (int i=6; i > 0; i-- ) {
+            // TODO: Don't add/draw the non-textured polygon if we're going to be showing it textured.
             this->screen_vertices_textured.vertices.append(this->vertices.at(this->vertices.size()-i)); // Note: This duplicates vertices, so coloured poly drawn first, then textured.
             this->screen_vertices_textured.colors.append(QVector4D(1.0, 0, 0, 1.0));
             this->screen_vertices_textured.texCoords.append(texCoords[6-i]);
