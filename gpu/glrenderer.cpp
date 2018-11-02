@@ -154,6 +154,8 @@ GLRenderer::GLRenderer(QWidget *parent) : QOpenGLWidget(parent) {
 
         }
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         if ((this->screen_vertices_textured.vertices.size() > 0) && this->screen_vertices_textured.textures.size() > 0) {
 
