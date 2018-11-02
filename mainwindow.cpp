@@ -275,7 +275,30 @@ void MainWindow::loadFile(QString logFilePath) {
 
                 // TODO: Handle these properly... (Texcoords, Palette CLUT, Texpage)
                 case 7:
+                    {
+                        // TODO: Handle non-named parameters better so next line is no longer required...
+                        current_command->addOpaqueParameter(current_numeric_field, false);  // Note: Required to ensure index offset of non-named parameters is correct.
+
+                        auto clut_coords_encoded = byte_of_quint32(current_numeric_field, 0) << 8 | byte_of_quint32(current_numeric_field, 1);
+
+                        QPoint clut_coords((clut_coords_encoded & 0b111111) * 16, ((clut_coords_encoded >> 6) & 0b111111111));
+                        current_command->addNamedPointParameter("clut_coords", clut_coords);
+                    }
+                break;
+
                 case 5:
+                    {
+                        // TODO: Handle remaining values encoded in texpage...
+                        // TODO: Handle non-named parameters better so next line is no longer required...
+                        current_command->addOpaqueParameter(current_numeric_field, false); // Note: Required to ensure index offset of non-named parameters is correct.
+
+                        auto texpage_encoded = byte_of_quint32(current_numeric_field, 0) << 8 | byte_of_quint32(current_numeric_field, 1);
+
+                        QPoint texpage_base_coords((texpage_encoded & 0b1111) * 64, ((texpage_encoded >> 4) & 0b1) * 256);
+                        current_command->addNamedPointParameter("texpage_base_coords", texpage_base_coords);
+                    }
+                break;
+
                 case 3:
                 case 1:
                     current_command->addOpaqueParameter(current_numeric_field);
