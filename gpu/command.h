@@ -117,7 +117,7 @@ public:
     QBuffer data; // Associated (DMA) transferred data. (Primarily for 'gp0_image_load' (0xa0) command.)
     QImage *texture; // Content of 'gp0_image_load' (0xa0) command as an image.
 
-    QStandardItem *raw_lines;
+    QStandardItem *raw_lines = nullptr;
 
     static GpuCommand *fromFields(QString targetGpu, quint32 command);
 
