@@ -126,6 +126,7 @@ public:
     QPoint addVertexParameter(quint32 parameter_word);
     quint32 addOpaqueParameter(quint32 parameter_word, bool displayInTree = true);
 
+    QVector<QRgb> asPalette;
     void addNamedPointParameter(QString parameter_name, QPoint point_parameter);
     void addTexturePreview(QImage texture);
 };

@@ -384,10 +384,26 @@ void MainWindow::loadFile(QString logFilePath) {
                         current_command->addTexturePreview(current_command->texture_raw);
 
 
+                        if (size_vertex == QPoint(16, 1)) {
 
+                            // Assume it's a 4-bit palette/Color Look Up Table...
+                            // TODO: Improve heuristic and/or include other size CLUTs?
+                            current_command->asPalette = convertClutToPalette(current_command->data.data());
+
+                            for (const QColor &current_color : current_command->asPalette) {
+
+                                auto this_item = new QStandardItem(current_color.name());
+                                this_item->setData(current_color, Qt::DecorationRole);
+                                current_command->appendRow(this_item);
+
+                            }
+
+                            // TODO: Use a better method of selecting color entry to display (instead of hardcoding index 4).
+                            current_command->setData(QColor(current_command->asPalette.at(4)), Qt::DecorationRole);
+
+                        }
 
                         this->glRenderer->loadTexture(current_command);
-
 
                         in_data_transfer = false;
                     }
