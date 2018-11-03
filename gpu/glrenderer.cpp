@@ -330,7 +330,7 @@ void GLRenderer::loadTexture(GpuCommand *current_command) {
     auto position_vertex = current_command->parameters.first().toPoint();
 
 
-    this->textures_loaded.append(new QOpenGLTexture(current_command->texture->mirrored()));
+    this->textures_loaded.append(new QOpenGLTexture(current_command->texture_raw.mirrored()));
 
     this->textures_loaded.last()->setMagnificationFilter(QOpenGLTexture::Nearest);
 

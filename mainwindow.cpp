@@ -376,15 +376,14 @@ void MainWindow::loadFile(QString logFilePath) {
 
                         auto size_vertex = current_command->parameters.last().toPoint();
 
-                        QImage image((unsigned char *) current_command->data.data().constData() /* LOL */, size_vertex.x(), size_vertex.y(), QImage::Format_RGB555);
-
-                        auto new_item = new QStandardItem("");
-                        new_item->setData(QPixmap::fromImage(image), Qt::DecorationRole);
-                        current_command->appendRow(new_item);
-
                         current_command->data.close();
 
-                        current_command->texture = new QImage(image);
+                        current_command->texture_raw = QImage((unsigned char *) current_command->data.data().constData() /* LOL */, size_vertex.x(), size_vertex.y(), QImage::Format_RGB555);
+                        current_command->texture_raw.detach();
+
+                        current_command->addTexturePreview(current_command->texture_raw);
+
+
 
 
                         this->glRenderer->loadTexture(current_command);
