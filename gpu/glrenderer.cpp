@@ -337,6 +337,8 @@ void GLRenderer::loadTexture(GpuCommand *current_command) {
     //        this->point_to_texture_lookup[std::make_pair(position_vertex.x(), position_vertex.y())] = this->textures.last();
     this->point_to_texture_lookup[(position_vertex.x() << 16 | position_vertex.y())] = this->textures_loaded.last();
 
+    this->point_to_texture_command_lookup[(position_vertex.x() << 16 | position_vertex.y())] = current_command;
+
     this->drawTexture(current_command);
 
 }

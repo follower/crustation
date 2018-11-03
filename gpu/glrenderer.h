@@ -72,6 +72,7 @@ protected:
 
         // TODO: Handle the key side better...
         QHash<quint32, QOpenGLTexture *> point_to_texture_lookup;
+        QHash<quint32, GpuCommand *> point_to_texture_command_lookup;
 
         bool resetRequested = false;
 
