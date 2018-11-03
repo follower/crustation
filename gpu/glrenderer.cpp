@@ -262,6 +262,8 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
         }
 
 
+        // TODO: Only do this once on load instead?
+        if (current_command->texture_colored.isNull()) {
 
             auto clut_coords = current_command->named_parameters.value("clut_coords").value<QPoint>();
             auto texpage_base_coords = current_command->named_parameters.value("texpage_base_coords").value<QPoint>();
@@ -271,9 +273,13 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
             auto found_texture_command = this->point_to_texture_command_lookup.value(texpage_base_coords.x() << 16 | texpage_base_coords.y());
             auto found_palette_command = this->point_to_texture_command_lookup.value((clut_coords.x() << 16 | clut_coords.y()));
 
+            current_command->texture_colored = found_texture_command->texture_8bit_indexed.copy();
+            current_command->texture_colored.setColorTable(found_palette_command->asPalette);
 
+            current_command->addTexturePreview(current_command->texture_colored);
 
 //        this->point_to_texture_lookup.value(std::make_pair(texpage_xbase, texpage_ybase));
+        }
 
 
 

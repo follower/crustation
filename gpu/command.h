@@ -117,6 +117,7 @@ public:
     QBuffer data; // Associated (DMA) transferred data. (Primarily for 'gp0_image_load' (0xa0) command.)
     QImage texture_raw; // Content of 'gp0_image_load' (0xa0) command as an image.
     QImage texture_8bit_indexed; // The decompressed texture with grayscale indexed palette. // NOTE: Qt Creator appears to crash when viewing QImage::Format_Indexed8 images.
+    QImage texture_colored; // A texture coloured with a specific palette.
 
     QStandardItem *raw_lines = nullptr;
 
