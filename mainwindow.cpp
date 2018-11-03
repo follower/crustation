@@ -401,6 +401,14 @@ void MainWindow::loadFile(QString logFilePath) {
                             // TODO: Use a better method of selecting color entry to display (instead of hardcoding index 4).
                             current_command->setData(QColor(current_command->asPalette.at(4)), Qt::DecorationRole);
 
+                        } else {
+
+                            // Assume it's a (4-bit indexed) texture...
+                            // TODO: Improve heuristic and/or include other types?
+
+                            current_command->texture_8bit_indexed = convert4BitTextureToIndexedImage(current_command->data.data(), QSize(size_vertex.x(), size_vertex.y()));
+                            current_command->addTexturePreview(current_command->texture_8bit_indexed);
+
                         }
 
                         this->glRenderer->loadTexture(current_command);
