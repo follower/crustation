@@ -262,10 +262,6 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
         }
 
 
-//        qDebug("%08x", current_command->parameters[2].toUInt());
-//        qDebug("%08x", current_command->parameters[4].toUInt());
-//        qDebug("%08x", current_command->parameters[6].toUInt());
-//        qDebug("%08x", current_command->parameters[8].toUInt());
 
         auto word = current_command->parameters[2].toUInt();
 
