@@ -263,34 +263,19 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
 
 
 
-        auto word = current_command->parameters[2].toUInt();
+            auto clut_coords = current_command->named_parameters.value("clut_coords").value<QPoint>();
+            auto texpage_base_coords = current_command->named_parameters.value("texpage_base_coords").value<QPoint>();
 
-        auto clut = byte_of_quint32(word, 0) << 8 | byte_of_quint32(word, 1);
+            // Note: This assumes the texture hasn't been modified in VRAM...
+            // TODO: Handle texture/palette not found?
+            auto found_texture_command = this->point_to_texture_command_lookup.value(texpage_base_coords.x() << 16 | texpage_base_coords.y());
+            auto found_palette_command = this->point_to_texture_command_lookup.value((clut_coords.x() << 16 | clut_coords.y()));
 
-        auto clut_xcoord = (clut & 0b111111) * 16;
-        auto clut_ycoord = ((clut >> 6) & 0b111111111);
-
-        qDebug() << "clut_xcoord:" << clut_xcoord;
-        qDebug() << "clut_ycoord:"<< clut_ycoord;
-
-
-        word = current_command->parameters[4].toUInt();
-
-        auto texpage = byte_of_quint32(word, 0) << 8 | byte_of_quint32(word, 1);
-
-        auto texpage_xbase = (texpage & 0b1111) * 64;
-        auto texpage_ybase = ((texpage >> 4) & 0b1) * 256;
-
-        qDebug() << "texpage_xbase:" << texpage_xbase;
-        qDebug() << "texpage_ybase:" << texpage_ybase;
 
 
 //        this->point_to_texture_lookup.value(std::make_pair(texpage_xbase, texpage_ybase));
 
-        auto found_texture = this->point_to_texture_lookup.value((texpage_xbase << 16 | texpage_ybase));
 
-        // TODO: Handle texture not found?
-        this->screen_vertices_textured.textures.append(found_texture);
 
     }
 
