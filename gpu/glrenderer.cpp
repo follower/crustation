@@ -348,6 +348,10 @@ void GLRenderer::loadTexture(GpuCommand *current_command) {
 
     auto position_vertex = current_command->parameters.first().toPoint();
 
+    // Note: This `makeCurrent()` call doesn't *seem* to be required *here*
+    //       for some reason but it's included in case it prevents potential issues.
+    //       See comment in `drawPolygon()` method above for more detail.
+    this->makeCurrent();
 
     this->textures_loaded.append(new QOpenGLTexture(current_command->texture_raw.mirrored()));
 
