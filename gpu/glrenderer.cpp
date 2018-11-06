@@ -278,7 +278,6 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
 
             current_command->addTexturePreview(current_command->texture_colored);
 
-//        this->point_to_texture_lookup.value(std::make_pair(texpage_xbase, texpage_ybase));
         }
 
         /*
