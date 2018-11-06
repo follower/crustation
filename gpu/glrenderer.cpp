@@ -281,7 +281,39 @@ void GLRenderer::drawPolygon(GpuCommand *current_command, bool useItemColor) {
 //        this->point_to_texture_lookup.value(std::make_pair(texpage_xbase, texpage_ybase));
         }
 
+        /*
 
+          NOTE: Without the `this->makeCurrent()` call below the `QOpenGLTexture` texture will display
+                in a corrupted manner on first paint.
+
+                It's not entirely clear why the call is required here but not required for the other use of
+                `QOpenGLTexture` in `loadTexture()`. It may be related to whether the originating call occurred as
+                a result of an event handler?
+
+                This link led to discovery of the `makeCurrent()` solution:
+
+                   * <https://forum.qt.io/topic/8841/solved-qglwidget-makecurrent-is-per-widget-only-or-per-thread/4>
+
+                   * Also somewhat related: <https://www.qtcentre.org/threads/61820-Using-QOpenGLWidget-swapBuffers>
+
+                The need for the `makeCurrent()` call doesn't seem to be explicitly documented
+                but may be implied by:
+
+                   * "It is not necessary to call this function in **most** cases, because it is called
+                      automatically before invoking paintGL()." -- <http://doc.qt.io/qt-5/qopenglwidget.html#makeCurrent>
+
+                   * "...construction using this constructor does require a **valid current OpenGL context**."
+                       -- <http://doc.qt.io/qt-5/qopengltexture.html>
+
+                It seems the current context may be changed even if multi-threading is not used because Qt
+                itself uses OpenGL to composite the entire window containing the `QOpenGLWidget` instance.
+
+         */
+
+        this->makeCurrent();
+
+        // TODO: Also cache the QOpenGLTexture instance?
+        this->screen_vertices_textured.textures.append(new QOpenGLTexture(current_command->texture_colored.convertToFormat(QImage::Format_ARGB32).mirrored()));
 
     }
 
