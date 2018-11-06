@@ -366,6 +366,8 @@ void MainWindow::loadFile(QString logFilePath) {
                     //      00 BB BB BB BB BB GG GG GG GG GG RR RR RR RR RR
 
                     // Note: Not entirely sure about where this (correct) order is determined.
+                    // TODO: Confirm whether or not the logged VRAM data incorrectly has the words swapped.
+                    // TODO: Fix this up somewhat...
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 2));
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 3));
                     current_command->data.putChar(byte_of_quint32(current_numeric_field, 0));
